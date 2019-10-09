@@ -1,5 +1,4 @@
 package com.caseStudy.ecart.modal;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
