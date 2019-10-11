@@ -11,5 +11,7 @@ public interface SimpleRepository extends JpaRepository<items, Long>
     @Override
     List<items> findAll();
     List<items> findByCategory(String category);
+    List<items> findByProductId(Long id);
+
 }
 

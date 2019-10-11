@@ -35,7 +35,7 @@ public class CartController {
     @GetMapping(path = "/cart/decrement/{value}/product/{productId}")
     public String decrement(@PathVariable("value") int value,
                             @PathVariable("productId") Long productId, Principal principal) {
-        return cartService.increment(value,productId,principal);
+        return cartService.decrement(value,productId,principal);
 
     }
 

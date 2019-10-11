@@ -68,7 +68,7 @@ public class CartService {
     public String increment(int value, Long productId, Principal principal)
     {
         ArrayList<cart> carts = getCartFrontUser(principal);
-        Optional<items> items=itemRepositoryClass.getById(productId);
+        Optional<items> items=simpleRepository.findById(productId);
         for(int i=0 ; i<carts.size() ; i++)
         {
             cart cartObj = carts.get(i);
@@ -84,7 +84,7 @@ public class CartService {
     public String decrement(int value, Long productId ,Principal principal )
     {
         ArrayList<cart> cart = getCartFrontUser(principal);
-        Optional<items> items=itemRepositoryClass.getById(productId);
+        Optional<items> items=simpleRepository.findById(productId);
         for(int i=0 ; i<cart.size() ; i++)
         {
             cart cartObj = cart.get(i);
