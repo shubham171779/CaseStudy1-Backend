@@ -15,7 +15,7 @@ public class CartController {
     CartService cartService;
 
     @GetMapping("/allcart")
-    public ArrayList<cart> getCart() {return cartService.getEmail(LoginController.principal);}
+    public ArrayList<cart> getCart(Principal principal) {return cartService.getEmail(principal);}
 
     @GetMapping(path = "/cart/addItem/productId/{id}")
     public String addItemToCart(@PathVariable("id") Long productId, Principal principal) {
@@ -34,8 +34,8 @@ public class CartController {
     }
     @GetMapping(path = "/cart/decrement/{value}/product/{productId}")
     public String decrement(@PathVariable("value") int value,
-                            @PathVariable("productId") Long productId) {
-        return cartService.increment(value,productId,LoginController.principal);
+                            @PathVariable("productId") Long productId, Principal principal) {
+        return cartService.increment(value,productId,principal);
 
     }
 
