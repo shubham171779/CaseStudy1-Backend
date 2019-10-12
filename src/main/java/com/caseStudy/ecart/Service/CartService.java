@@ -1,12 +1,10 @@
 package com.caseStudy.ecart.Service;
 
-import com.caseStudy.ecart.Repository.CartRepository;
-import com.caseStudy.ecart.Repository.ItemRepositoryClass;
-import com.caseStudy.ecart.Repository.SimpleRepository;
-import com.caseStudy.ecart.Repository.UserRepositoryClass;
+import com.caseStudy.ecart.Repository.*;
 import com.caseStudy.ecart.modal.Users;
 import com.caseStudy.ecart.modal.cart;
 import com.caseStudy.ecart.modal.items;
+import com.caseStudy.ecart.modal.orders;
 import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,24 +21,28 @@ public class CartService {
     @Autowired
     CartRepository cartRepository;
     @Autowired
-    UserRepositoryClass userRepositoryClass;
+    UserRepository userRepository;
     @Autowired
     SimpleRepository simpleRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     ItemRepositoryClass itemRepositoryClass;
+    private Object Users;
+
     private ArrayList<cart> getCartFrontUser(Principal principal) {
-        Optional<Users> users = userRepositoryClass.getByEmail(principal.getName());
+        Optional<Users> users = userRepository.findByEmail(principal.getName());
         ArrayList<cart> car = cartRepository.findAllByUsers(users);
         return car;
     }
     public ArrayList<cart> getEmail(Principal principal) {
         String email = principal.getName();
-        Optional<Users> users= userRepositoryClass.getByEmail(email);
+        Optional<Users> users= userRepository.findByEmail(email);
         return cartRepository.findAllByUsers(users);
     }
     public String additemstoCart(Principal principal, Long id) {
         Optional<items> item = simpleRepository.findById(id);
-        Optional<Users> users = userRepositoryClass.getByEmail(principal.getName());
+        Optional<Users> users = userRepository.findByEmail(principal.getName());
         ArrayList<cart> cart = getCartFrontUser(principal);
         for(int i = 0; i<cart.size(); i++)
         {
@@ -61,7 +65,7 @@ public class CartService {
     public String deleteItemFromCart(Long id, Principal principal)
     {
         Optional<items> items = simpleRepository.findById(id);
-        Optional<Users> users = userRepositoryClass.getByEmail(principal.getName());
+        Optional<Users> users = userRepository.findByEmail(principal.getName());
         cartRepository.deleteByUsersAndItems(users,items);
         return "\"deletion completed\"";
     }
@@ -89,13 +93,32 @@ public class CartService {
         {
             cart cartObj = cart.get(i);
             if(cartObj.getItm() == items.get())
+            { int x =cartObj.getQuantity() -value;
+            if(x == 1)
             {
-                cartObj.setQuantity(cartObj.getQuantity() - value);
+            cartObj.setQuantity(1);
                 cartRepository.save(cartObj);
                 return "\"Successfull\"";
             }
         }
         return "\"unsuccessfull\"";
     }
+    public List<orders> checkOut(Principal principal)
+    {
+       Optional<Users> users = userRepository.findByEmail(principal.getName());
+        List <cart> cartList = cartRepository.findAllByUsers(users);
+        for(cart cart : cartList)
+        {
+            orders orders = new orders();
+            orders.setUserId(cart.getUsr().getId());
+            orders.setQuantity(cart.getQuantity());
+            orders.setPrice(cart.getItm().getPrice());
+            orders.setItemName(cart.getItm().getName());
+            orders.setDate(new Date());
+            cartRepository.delete(cart);
+            orderRepository.saveAndFlush(orders);
 
+
+        }
+        return orderRepository.findAllByUserId(users.get().getId());    }
 }

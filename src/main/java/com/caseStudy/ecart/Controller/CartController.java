@@ -2,11 +2,14 @@ package com.caseStudy.ecart.Controller;
 
 import com.caseStudy.ecart.Service.CartService;
 import com.caseStudy.ecart.modal.cart;
+import com.caseStudy.ecart.modal.orders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/carts")
@@ -38,5 +41,10 @@ public class CartController {
         return cartService.decrement(value,productId,principal);
 
     }
-
+    @GetMapping(path = "/checkout", produces = "application/json")
+    @ResponseBody
+    public List<orders> checkoutFromCart(Principal principal)
+    {
+        return cartService.checkOut(principal);
+    }
 }
