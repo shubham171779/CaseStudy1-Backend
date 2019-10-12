@@ -5,7 +5,7 @@ import com.caseStudy.ecart.modal.Users;
 import com.caseStudy.ecart.modal.cart;
 import com.caseStudy.ecart.modal.items;
 import com.caseStudy.ecart.modal.orders;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,9 +78,12 @@ public class CartService {
             cart cartObj = carts.get(i);
             if(cartObj.getItm() == items.get())
             {
-                cartObj.setQuantity(cartObj.getQuantity() + value);
-                cartRepository.save(cartObj);
-                return "\"Successfull\"";
+                int x = cartObj.getQuantity() + value;
+                if(x>1) {
+                    cartObj.setQuantity(x);
+                    cartRepository.save(cartObj);
+                    return "\"Successfull\"";
+                }
             }
         }
         return "\"UnSuccessfull\"";
@@ -99,6 +102,13 @@ public class CartService {
             cartObj.setQuantity(1);
                 cartRepository.save(cartObj);
                 return "\"Successfull\"";
+            }
+            else if (x>1)
+            {
+                cartObj.setQuantity(x);
+                cartRepository.save(cartObj);
+                return "\"Successfull\"";
+            }
             }
         }
         return "\"unsuccessfull\"";
