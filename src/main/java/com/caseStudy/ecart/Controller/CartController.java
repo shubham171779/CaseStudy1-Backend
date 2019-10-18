@@ -31,7 +31,9 @@ public class CartController {
     }
     @GetMapping(path = "/cart/increment/{value}/product/{productId}")
     public String increment(@PathVariable("value") int value,
-                            @PathVariable("productId") Long productId, Principal principal) {
+                            @PathVariable("productId") Long productId, Principal principal)
+    {
+
         return cartService.increment(value,productId,principal);
 
     }

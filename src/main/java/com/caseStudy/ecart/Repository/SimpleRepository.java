@@ -12,6 +12,7 @@ public interface SimpleRepository extends JpaRepository<items, Long>
     List<items> findAll();
     List<items> findByCategory(String category);
     List<items> findByProductId(Long id);
+    List<items> findByPriceBetween(Double price1, Double price2);
 
 }
 

@@ -2,6 +2,7 @@ package com.caseStudy.ecart.Controller;
 
 import com.caseStudy.ecart.Exception.ResourceNotFoundException;
 import com.caseStudy.ecart.Repository.SimpleRepository;
+import com.caseStudy.ecart.Service.ItemService;
 import com.caseStudy.ecart.modal.items;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +52,17 @@ import java.util.List;
         {
             return ItemRepository.findById(prodId).orElseThrow(()->new ResourceNotFoundException("details","id",prodId));
         }
-
+    @GetMapping("/items/{price1}/{price2}")
+    public List<items> getItembyPrice(@PathVariable(value = "price1") Double price1,@PathVariable(value = "price2") Double price2)
+    {
+        return ItemRepository.findByPriceBetween(price1,price2);
+    }
+    @Autowired
+    ItemService itemService;
+    @PutMapping("/edititems/{id}")
+    public items editItems(@RequestBody items items,@PathVariable(value = "id") Long id)
+    {
+        return itemService.edititem(items, id);
+    }
 }
 
