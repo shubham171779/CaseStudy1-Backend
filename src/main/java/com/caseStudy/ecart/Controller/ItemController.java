@@ -64,5 +64,9 @@ import java.util.List;
     {
         return itemService.edititem(items, id);
     }
+    @PostMapping("/items")
+    public items createNote(@Valid @RequestBody items item) {
+        return ItemRepository.save(item);
+    }
 }
 
